@@ -1,0 +1,18 @@
+You are responsible for: Loads and validates environment variables for external integrations (menu retrieval, order submission, AI). Assumes environment-based configuration for a Node.js/TypeScript stack. This module exists because: Centralized environment configuration is required to connect to external menu, order, and AI services.
+
+Requirements
+1. Load and validate environment keys: MENU_API_BASE_URL (string), ORDER_SUBMISSION_URL (string), AI_API_KEY (string), AI_MODEL (string, optional).
+2. Throw or surface a clear configuration error when required keys are missing.
+3. Export a typed configuration object for downstream modules.
+
+Dependencies
+- None
+
+Instructions
+- Keep the implementation framework-idiomatic and typed.
+- Avoid hardcoded values; rely on inputs and configuration.
+- Return stable, documented shapes for all outputs.
+- Do not read environment variables outside the config module.
+
+Deliverable
+- lib/env.ts

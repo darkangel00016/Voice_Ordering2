@@ -1,0 +1,466 @@
+[
+  {
+    "reason": "Shared domain types are needed to keep menu, order, and conversation data consistent across frontend and API routes",
+    "description": "Defines core TypeScript types such as MenuItem, ModifierOption, OrderItem, Order, ConversationTurn, and API request/response shapes. Assumes a TypeScript-based codebase since no tech stack file is provided.",
+    "dependencies": [],
+    "priority": 1,
+    "filename": "shared_types_TypeScript.prompt",
+    "filepath": "lib/types.ts",
+    "tags": [
+      "types",
+      "shared"
+    ],
+    "interface": {
+      "type": "module",
+      "module": {
+        "functions": [
+          {
+            "name": "MenuItem",
+            "signature": "interface MenuItem",
+            "returns": "MenuItem type"
+          },
+          {
+            "name": "Order",
+            "signature": "interface Order",
+            "returns": "Order type"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Centralized environment configuration is required to connect to external menu, order, and AI services",
+    "description": "Loads and validates environment variables for external integrations (menu retrieval, order submission, AI). Assumes environment-based configuration for a Node.js/TypeScript stack.",
+    "dependencies": [],
+    "priority": 2,
+    "filename": "env_config_TypeScript.prompt",
+    "filepath": "lib/env.ts",
+    "tags": [
+      "config",
+      "env"
+    ],
+    "interface": {
+      "type": "config",
+      "config": {
+        "keys": [
+          {
+            "name": "MENU_API_BASE_URL",
+            "type": "string",
+            "required": true,
+            "source": "env"
+          },
+          {
+            "name": "ORDER_SUBMISSION_URL",
+            "type": "string",
+            "required": true,
+            "source": "env"
+          },
+          {
+            "name": "AI_API_KEY",
+            "type": "string",
+            "required": true,
+            "source": "env"
+          },
+          {
+            "name": "AI_MODEL",
+            "type": "string",
+            "required": false,
+            "source": "env"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Menu retrieval must be abstracted so the UI and conversation logic can validate items against the current menu",
+    "description": "Client for fetching menu data from an external API (mocked initially) with basic caching and error normalization. Assumes HTTP-based menu provider.",
+    "dependencies": [
+      "shared_types_TypeScript.prompt",
+      "env_config_TypeScript.prompt"
+    ],
+    "priority": 3,
+    "filename": "menu_client_TypeScript.prompt",
+    "filepath": "lib/menuClient.ts",
+    "tags": [
+      "backend",
+      "integration"
+    ],
+    "interface": {
+      "type": "module",
+      "module": {
+        "functions": [
+          {
+            "name": "fetchMenu",
+            "signature": "async function fetchMenu(): Promise<MenuItem[]>",
+            "returns": "MenuItem[]"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Orders must be validated and normalized before confirmation and submission",
+    "description": "Validates order items against menu options, ensures required modifiers are present, computes totals, and returns structured validation errors for the conversation flow.",
+    "dependencies": [
+      "shared_types_TypeScript.prompt"
+    ],
+    "priority": 4,
+    "filename": "order_validator_TypeScript.prompt",
+    "filepath": "lib/orderValidator.ts",
+    "tags": [
+      "backend",
+      "validation"
+    ],
+    "interface": {
+      "type": "module",
+      "module": {
+        "functions": [
+          {
+            "name": "validateOrder",
+            "signature": "function validateOrder(order: Order, menu: MenuItem[]): ValidationResult",
+            "returns": "ValidationResult"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "AI interaction must be encapsulated to keep model calls and prompt safety centralized",
+    "description": "Thin adapter for calling an external LLM provider with system/user prompts and safety rules. Assumes a vendor-agnostic HTTP API backed by an API key.",
+    "dependencies": [
+      "shared_types_TypeScript.prompt",
+      "env_config_TypeScript.prompt"
+    ],
+    "priority": 5,
+    "filename": "ai_client_TypeScript.prompt",
+    "filepath": "lib/aiClient.ts",
+    "tags": [
+      "backend",
+      "ai"
+    ],
+    "interface": {
+      "type": "module",
+      "module": {
+        "functions": [
+          {
+            "name": "generateAssistantReply",
+            "signature": "async function generateAssistantReply(input: ConversationInput): Promise<ConversationTurn>",
+            "returns": "ConversationTurn"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Conversation orchestration is required to guide ordering flow and prevent prompt injection",
+    "description": "Manages conversation state, calls AI client for assistant responses, enforces ordering-only guardrails, and uses menu validation to ask follow-up questions. Assumes server-side orchestration for consistency across clients.",
+    "dependencies": [
+      "shared_types_TypeScript.prompt",
+      "menu_client_TypeScript.prompt",
+      "order_validator_TypeScript.prompt",
+      "ai_client_TypeScript.prompt"
+    ],
+    "priority": 6,
+    "filename": "conversation_engine_TypeScript.prompt",
+    "filepath": "lib/conversationEngine.ts",
+    "tags": [
+      "backend",
+      "ai",
+      "conversation"
+    ],
+    "interface": {
+      "type": "module",
+      "module": {
+        "functions": [
+          {
+            "name": "advanceConversation",
+            "signature": "async function advanceConversation(state: ConversationState, userText: string): Promise<ConversationState>",
+            "returns": "ConversationState"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Order submission must be encapsulated to isolate third-party integration details",
+    "description": "Client for submitting confirmed orders to an external kitchen or POS API. Handles retries for transient failures and normalizes error responses.",
+    "dependencies": [
+      "shared_types_TypeScript.prompt",
+      "env_config_TypeScript.prompt"
+    ],
+    "priority": 7,
+    "filename": "order_submission_client_TypeScript.prompt",
+    "filepath": "lib/orderSubmissionClient.ts",
+    "tags": [
+      "backend",
+      "integration"
+    ],
+    "interface": {
+      "type": "module",
+      "module": {
+        "functions": [
+          {
+            "name": "submitOrder",
+            "signature": "async function submitOrder(order: Order): Promise<SubmissionResult>",
+            "returns": "SubmissionResult"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Clients need an endpoint to retrieve the current menu",
+    "description": "Next.js API route providing menu data to the UI and conversation flow; proxies the external menu client and handles upstream errors gracefully.",
+    "dependencies": [
+      "menu_client_TypeScript.prompt"
+    ],
+    "priority": 8,
+    "filename": "api_menu_route_TypeScript.prompt",
+    "filepath": "app/api/menu/route.ts",
+    "tags": [
+      "backend",
+      "api",
+      "nextjs"
+    ],
+    "interface": {
+      "type": "api",
+      "api": {
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/api/menu",
+            "auth": "none",
+            "responseSchema": "{ items: MenuItem[] }"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Clients need a single endpoint to advance the ordering conversation",
+    "description": "Next.js API route that accepts user transcript text and current conversation state, returns updated state and assistant reply, and enforces ordering-only constraints.",
+    "dependencies": [
+      "conversation_engine_TypeScript.prompt"
+    ],
+    "priority": 9,
+    "filename": "api_conversation_route_TypeScript.prompt",
+    "filepath": "app/api/conversation/route.ts",
+    "tags": [
+      "backend",
+      "api",
+      "nextjs"
+    ],
+    "interface": {
+      "type": "api",
+      "api": {
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/conversation",
+            "auth": "none",
+            "requestSchema": "ConversationInput",
+            "responseSchema": "ConversationState"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "A dedicated endpoint is needed to submit confirmed orders to the backend",
+    "description": "Next.js API route that validates confirmed orders and forwards them to the external submission client, returning success/failure details.",
+    "dependencies": [
+      "order_submission_client_TypeScript.prompt",
+      "order_validator_TypeScript.prompt"
+    ],
+    "priority": 10,
+    "filename": "api_order_route_TypeScript.prompt",
+    "filepath": "app/api/order/route.ts",
+    "tags": [
+      "backend",
+      "api",
+      "nextjs"
+    ],
+    "interface": {
+      "type": "api",
+      "api": {
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/order",
+            "auth": "none",
+            "requestSchema": "Order",
+            "responseSchema": "SubmissionResult"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Root layout provides the shared shell for the kiosk/web ordering experience",
+    "description": "Next.js App Router root layout with global styles, accessible typography, and a container optimized for kiosk and mobile screens. Assumes Next.js App Router given the need for a unified web/kiosk UI.",
+    "dependencies": [
+      "shared_types_TypeScript.prompt"
+    ],
+    "priority": 11,
+    "filename": "root_layout_TypeScriptReact.prompt",
+    "filepath": "app/layout.tsx",
+    "tags": [
+      "frontend",
+      "layout",
+      "nextjs"
+    ],
+    "interface": {
+      "type": "page",
+      "page": {
+        "route": "/",
+        "params": [],
+        "dataSources": []
+      }
+    }
+  },
+  {
+    "reason": "Main ordering screen is required for customers to start and complete voice orders",
+    "description": "Primary page showing push-to-talk controls, live transcript, order summary, and confirmation actions. Assumes browser speech APIs for STT/TTS on the client with fallbacks for unsupported devices.",
+    "dependencies": [
+      "shared_types_TypeScript.prompt",
+      "api_menu_route_TypeScript.prompt",
+      "api_conversation_route_TypeScript.prompt",
+      "api_order_route_TypeScript.prompt",
+      "voice_controls_component_TypeScriptReact.prompt",
+      "transcript_panel_component_TypeScriptReact.prompt",
+      "order_summary_component_TypeScriptReact.prompt"
+    ],
+    "priority": 12,
+    "filename": "home_page_TypeScriptReact.prompt",
+    "filepath": "app/page.tsx",
+    "tags": [
+      "frontend",
+      "page",
+      "nextjs"
+    ],
+    "interface": {
+      "type": "page",
+      "page": {
+        "route": "/",
+        "params": [],
+        "dataSources": [
+          {
+            "kind": "api",
+            "source": "/api/menu",
+            "method": "GET",
+            "description": "Fetch current menu for validation and display"
+          },
+          {
+            "kind": "api",
+            "source": "/api/conversation",
+            "method": "POST",
+            "description": "Advance conversation state with each user utterance"
+          },
+          {
+            "kind": "api",
+            "source": "/api/order",
+            "method": "POST",
+            "description": "Submit confirmed order to backend"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Voice interaction controls are needed to start/stop listening and play assistant responses",
+    "description": "Client component providing push-to-talk and playback controls, handling microphone permissions and speech synthesis, and emitting transcript events to the parent.",
+    "dependencies": [
+      "shared_types_TypeScript.prompt"
+    ],
+    "priority": 13,
+    "filename": "voice_controls_component_TypeScriptReact.prompt",
+    "filepath": "components/VoiceControls.tsx",
+    "tags": [
+      "frontend",
+      "component",
+      "voice"
+    ],
+    "interface": {
+      "type": "component",
+      "component": {
+        "props": [
+          {
+            "name": "onTranscript",
+            "type": "(text: string) => void",
+            "required": true
+          },
+          {
+            "name": "isListening",
+            "type": "boolean",
+            "required": true
+          }
+        ],
+        "emits": [
+          "transcript",
+          "listeningChange"
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Users need to see live and historical transcripts to confirm recognition accuracy",
+    "description": "Client component rendering the user and assistant transcript stream with timestamps and status markers (listening, processing, confirming).",
+    "dependencies": [
+      "shared_types_TypeScript.prompt"
+    ],
+    "priority": 14,
+    "filename": "transcript_panel_component_TypeScriptReact.prompt",
+    "filepath": "components/TranscriptPanel.tsx",
+    "tags": [
+      "frontend",
+      "component"
+    ],
+    "interface": {
+      "type": "component",
+      "component": {
+        "props": [
+          {
+            "name": "turns",
+            "type": "ConversationTurn[]",
+            "required": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "reason": "Order summary UI is required to confirm items, modifiers, and totals before submission",
+    "description": "Client component that displays the current order items, modifiers, totals, and validation errors with clear confirm/cancel actions.",
+    "dependencies": [
+      "shared_types_TypeScript.prompt"
+    ],
+    "priority": 15,
+    "filename": "order_summary_component_TypeScriptReact.prompt",
+    "filepath": "components/OrderSummary.tsx",
+    "tags": [
+      "frontend",
+      "component"
+    ],
+    "interface": {
+      "type": "component",
+      "component": {
+        "props": [
+          {
+            "name": "order",
+            "type": "Order",
+            "required": true
+          },
+          {
+            "name": "validation",
+            "type": "ValidationResult",
+            "required": false
+          }
+        ],
+        "emits": [
+          "confirm",
+          "edit"
+        ]
+      }
+    }
+  }
+]

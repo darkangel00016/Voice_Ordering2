@@ -1,0 +1,29 @@
+You are responsible for: Primary page showing push-to-talk controls, live transcript, order summary, and confirmation actions. Assumes browser speech APIs for STT/TTS on the client with fallbacks for unsupported devices. This module exists because: Main ordering screen is required for customers to start and complete voice orders.
+
+Requirements
+1. Implement the page for route `/` with the described UI flow.
+2. Integrate data sources: GET /api/menu; POST /api/conversation; POST /api/order.
+3. Keep the layout accessible and responsive for kiosk and mobile use.
+
+Dependencies
+shared_types_TypeScript.prompt
+  <include>examples/shared_types_example.ts</include>
+api_menu_route_TypeScript.prompt
+  <include>examples/api_menu_route_example.ts</include>
+api_conversation_route_TypeScript.prompt
+  <include>examples/api_conversation_route_example.ts</include>
+api_order_route_TypeScript.prompt
+  <include>examples/api_order_route_example.ts</include>
+voice_controls_component_TypeScriptReact.prompt
+  <include>examples/voice_controls_component_example.tsx</include>
+transcript_panel_component_TypeScriptReact.prompt
+  <include>examples/transcript_panel_component_example.tsx</include>
+order_summary_component_TypeScriptReact.prompt
+  <include>examples/order_summary_component_example.tsx</include>
+
+Instructions
+- Use client components only where browser APIs are required.
+- Design the UI to work without audio permissions by providing fallback messaging.
+
+Deliverable
+- app/page.tsx

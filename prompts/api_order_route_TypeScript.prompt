@@ -1,0 +1,22 @@
+You are responsible for: Next.js API route that validates confirmed orders and forwards them to the external submission client, returning success/failure details. This module exists because: A dedicated endpoint is needed to submit confirmed orders to the backend.
+
+Requirements
+1. Implement the API route(s): POST /api/order.
+2. Validate request bodies and return the documented response schema.
+3. Handle upstream/validation errors with appropriate HTTP status codes.
+
+Dependencies
+order_submission_client_TypeScript.prompt
+  <include>examples/order_submission_client_example.ts</include>
+order_validator_TypeScript.prompt
+  <include>examples/order_validator_example.ts</include>
+
+Instructions
+- Keep the implementation framework-idiomatic and typed.
+- Avoid hardcoded values; rely on inputs and configuration.
+- Return stable, documented shapes for all outputs.
+- Use Next.js App Router request/response helpers.
+- Include basic input sanitization and guardrails.
+
+Deliverable
+- app/api/order/route.ts
