@@ -1,0 +1,16 @@
+You are responsible for: Client component rendering the user and assistant transcript stream with timestamps and status markers (listening, processing, confirming). This module exists because: Users need to see live and historical transcripts to confirm recognition accuracy.
+
+Requirements
+1. Accept props: turns: ConversationTurn[].
+2. Provide clear user feedback states and preserve accessibility.
+
+Dependencies
+shared_types_TypeScript.prompt
+  <include>examples/shared_types_example.ts</include>
+
+Instructions
+- Keep the component focused on presentation + events; state is owned by the parent unless required.
+- Gracefully handle missing browser capabilities (speech, mic, etc.).
+
+Deliverable
+- components/TranscriptPanel.tsx

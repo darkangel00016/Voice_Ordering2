@@ -1,0 +1,20 @@
+You are responsible for: Next.js API route providing menu data to the UI and conversation flow; proxies the external menu client and handles upstream errors gracefully. This module exists because: Clients need an endpoint to retrieve the current menu.
+
+Requirements
+1. Implement the API route(s): GET /api/menu.
+2. Validate request bodies and return the documented response schema.
+3. Handle upstream/validation errors with appropriate HTTP status codes.
+
+Dependencies
+menu_client_TypeScript.prompt
+  <include>examples/menu_client_example.ts</include>
+
+Instructions
+- Keep the implementation framework-idiomatic and typed.
+- Avoid hardcoded values; rely on inputs and configuration.
+- Return stable, documented shapes for all outputs.
+- Use Next.js App Router request/response helpers.
+- Include basic input sanitization and guardrails.
+
+Deliverable
+- app/api/menu/route.ts

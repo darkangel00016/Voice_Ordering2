@@ -1,0 +1,21 @@
+You are responsible for: Thin adapter for calling an external LLM provider with system/user prompts and safety rules. Assumes a vendor-agnostic HTTP API backed by an API key. This module exists because: AI interaction must be encapsulated to keep model calls and prompt safety centralized.
+
+Requirements
+1. Export the module API with: generateAssistantReply (async function generateAssistantReply(input: ConversationInput): Promise<ConversationTurn>).
+2. Ensure all public types are imported from the shared types module where applicable.
+3. Provide clear error handling and return types that match the declared interface.
+
+Dependencies
+shared_types_TypeScript.prompt
+  <include>examples/shared_types_example.ts</include>
+env_config_TypeScript.prompt
+  <include>examples/env_config_example.ts</include>
+
+Instructions
+- Keep the implementation framework-idiomatic and typed.
+- Avoid hardcoded values; rely on inputs and configuration.
+- Return stable, documented shapes for all outputs.
+- Normalize errors into predictable error objects for callers.
+
+Deliverable
+- lib/aiClient.ts

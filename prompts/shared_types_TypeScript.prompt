@@ -1,0 +1,18 @@
+You are responsible for: Defines core TypeScript types such as MenuItem, ModifierOption, OrderItem, Order, ConversationTurn, and API request/response shapes. Assumes a TypeScript-based codebase since no tech stack file is provided. This module exists because: Shared domain types are needed to keep menu, order, and conversation data consistent across frontend and API routes.
+
+Requirements
+1. Export the module API with: MenuItem (interface MenuItem), Order (interface Order).
+2. Ensure all public types are imported from the shared types module where applicable.
+3. Provide clear error handling and return types that match the declared interface.
+
+Dependencies
+- None
+
+Instructions
+- Keep the implementation framework-idiomatic and typed.
+- Avoid hardcoded values; rely on inputs and configuration.
+- Return stable, documented shapes for all outputs.
+- Normalize errors into predictable error objects for callers.
+
+Deliverable
+- lib/types.ts

@@ -1,0 +1,17 @@
+You are responsible for: Client component that displays the current order items, modifiers, totals, and validation errors with clear confirm/cancel actions. This module exists because: Order summary UI is required to confirm items, modifiers, and totals before submission.
+
+Requirements
+1. Accept props: order: Order, validation: ValidationResult (optional).
+2. Emit events: confirm, edit.
+3. Provide clear user feedback states and preserve accessibility.
+
+Dependencies
+shared_types_TypeScript.prompt
+  <include>examples/shared_types_example.ts</include>
+
+Instructions
+- Keep the component focused on presentation + events; state is owned by the parent unless required.
+- Gracefully handle missing browser capabilities (speech, mic, etc.).
+
+Deliverable
+- components/OrderSummary.tsx

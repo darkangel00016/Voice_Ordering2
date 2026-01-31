@@ -1,0 +1,20 @@
+You are responsible for: Next.js API route that accepts user transcript text and current conversation state, returns updated state and assistant reply, and enforces ordering-only constraints. This module exists because: Clients need a single endpoint to advance the ordering conversation.
+
+Requirements
+1. Implement the API route(s): POST /api/conversation.
+2. Validate request bodies and return the documented response schema.
+3. Handle upstream/validation errors with appropriate HTTP status codes.
+
+Dependencies
+conversation_engine_TypeScript.prompt
+  <include>examples/conversation_engine_example.ts</include>
+
+Instructions
+- Keep the implementation framework-idiomatic and typed.
+- Avoid hardcoded values; rely on inputs and configuration.
+- Return stable, documented shapes for all outputs.
+- Use Next.js App Router request/response helpers.
+- Include basic input sanitization and guardrails.
+
+Deliverable
+- app/api/conversation/route.ts

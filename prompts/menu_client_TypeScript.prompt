@@ -1,0 +1,21 @@
+You are responsible for: Client for fetching menu data from an external API (mocked initially) with basic caching and error normalization. Assumes HTTP-based menu provider. This module exists because: Menu retrieval must be abstracted so the UI and conversation logic can validate items against the current menu.
+
+Requirements
+1. Export the module API with: fetchMenu (async function fetchMenu(): Promise<MenuItem[]>).
+2. Ensure all public types are imported from the shared types module where applicable.
+3. Provide clear error handling and return types that match the declared interface.
+
+Dependencies
+shared_types_TypeScript.prompt
+  <include>examples/shared_types_example.ts</include>
+env_config_TypeScript.prompt
+  <include>examples/env_config_example.ts</include>
+
+Instructions
+- Keep the implementation framework-idiomatic and typed.
+- Avoid hardcoded values; rely on inputs and configuration.
+- Return stable, documented shapes for all outputs.
+- Normalize errors into predictable error objects for callers.
+
+Deliverable
+- lib/menuClient.ts

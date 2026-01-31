@@ -1,0 +1,16 @@
+You are responsible for: Next.js App Router root layout with global styles, accessible typography, and a container optimized for kiosk and mobile screens. Assumes Next.js App Router given the need for a unified web/kiosk UI. This module exists because: Root layout provides the shared shell for the kiosk/web ordering experience.
+
+Requirements
+1. Implement the page for route `/` with the described UI flow.
+2. Keep the layout accessible and responsive for kiosk and mobile use.
+
+Dependencies
+shared_types_TypeScript.prompt
+  <include>examples/shared_types_example.ts</include>
+
+Instructions
+- Use client components only where browser APIs are required.
+- Design the UI to work without audio permissions by providing fallback messaging.
+
+Deliverable
+- app/layout.tsx

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>PDD – AI Voice Ordering Agent for Restaurants</title>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,theme:'default'});
+window.addEventListener('load', () => {
+    const moduleData = {"shared_types_TypeScript": {"filename": "shared_types_TypeScript.prompt", "priority": 1, "description": "Defines core TypeScript types such as MenuItem, ModifierOption, OrderItem, Order, ConversationTurn, and API request/response shapes. Assumes a TypeScript-based codebase since no tech stack file is provided.", "dependencies": [], "tags": ["types", "shared"], "filepath": "lib/types.ts"}, "env_config_TypeScript": {"filename": "env_config_TypeScript.prompt", "priority": 2, "description": "Loads and validates environment variables for external integrations (menu retrieval, order submission, AI). Assumes environment-based configuration for a Node.js/TypeScript stack.", "dependencies": [], "tags": ["config", "env"], "filepath": "lib/env.ts"}, "menu_client_TypeScript": {"filename": "menu_client_TypeScript.prompt", "priority": 3, "description": "Client for fetching menu data from an external API (mocked initially) with basic caching and error normalization. Assumes HTTP-based menu provider.", "dependencies": ["shared_types_TypeScript.prompt", "env_config_TypeScript.prompt"], "tags": ["backend", "integration"], "filepath": "lib/menuClient.ts"}, "order_validator_TypeScript": {"filename": "order_validator_TypeScript.prompt", "priority": 4, "description": "Validates order items against menu options, ensures required modifiers are present, computes totals, and returns structured validation errors for the conversation flow.", "dependencies": ["shared_types_TypeScript.prompt"], "tags": ["backend", "validation"], "filepath": "lib/orderValidator.ts"}, "ai_client_TypeScript": {"filename": "ai_client_TypeScript.prompt", "priority": 5, "description": "Thin adapter for calling an external LLM provider with system/user prompts and safety rules. Assumes a vendor-agnostic HTTP API backed by an API key.", "dependencies": ["shared_types_TypeScript.prompt", "env_config_TypeScript.prompt"], "tags": ["backend", "ai"], "filepath": "lib/aiClient.ts"}, "conversation_engine_TypeScript": {"filename": "conversation_engine_TypeScript.prompt", "priority": 6, "description": "Manages conversation state, calls AI client for assistant responses, enforces ordering-only guardrails, and uses menu validation to ask follow-up questions. Assumes server-side orchestration for consistency across clients.", "dependencies": ["shared_types_TypeScript.prompt", "menu_client_TypeScript.prompt", "order_validator_TypeScript.prompt", "ai_client_TypeScript.prompt"], "tags": ["backend", "ai", "conversation"], "filepath": "lib/conversationEngine.ts"}, "order_submission_client_TypeScript": {"filename": "order_submission_client_TypeScript.prompt", "priority": 7, "description": "Client for submitting confirmed orders to an external kitchen or POS API. Handles retries for transient failures and normalizes error responses.", "dependencies": ["shared_types_TypeScript.prompt", "env_config_TypeScript.prompt"], "tags": ["backend", "integration"], "filepath": "lib/orderSubmissionClient.ts"}, "api_menu_route_TypeScript": {"filename": "api_menu_route_TypeScript.prompt", "priority": 8, "description": "Next.js API route providing menu data to the UI and conversation flow; proxies the external menu client and handles upstream errors gracefully.", "dependencies": ["menu_client_TypeScript.prompt"], "tags": ["backend", "api", "nextjs"], "filepath": "app/api/menu/route.ts"}, "api_conversation_route_TypeScript": {"filename": "api_conversation_route_TypeScript.prompt", "priority": 9, "description": "Next.js API route that accepts user transcript text and current conversation state, returns updated state and assistant reply, and enforces ordering-only constraints.", "dependencies": ["conversation_engine_TypeScript.prompt"], "tags": ["backend", "api", "nextjs"], "filepath": "app/api/conversation/route.ts"}, "api_order_route_TypeScript": {"filename": "api_order_route_TypeScript.prompt", "priority": 10, "description": "Next.js API route that validates confirmed orders and forwards them to the external submission client, returning success/failure details.", "dependencies": ["order_submission_client_TypeScript.prompt", "order_validator_TypeScript.prompt"], "tags": ["backend", "api", "nextjs"], "filepath": "app/api/order/route.ts"}, "root_layout_TypeScriptReact": {"filename": "root_layout_TypeScriptReact.prompt", "priority": 11, "description": "Next.js App Router root layout with global styles, accessible typography, and a container optimized for kiosk and mobile screens. Assumes Next.js App Router given the need for a unified web/kiosk UI.", "dependencies": ["shared_types_TypeScript.prompt"], "tags": ["frontend", "layout", "nextjs"], "filepath": "app/layout.tsx"}, "home_page_TypeScriptReact": {"filename": "home_page_TypeScriptReact.prompt", "priority": 12, "description": "Primary page showing push-to-talk controls, live transcript, order summary, and confirmation actions. Assumes browser speech APIs for STT/TTS on the client with fallbacks for unsupported devices.", "dependencies": ["shared_types_TypeScript.prompt", "api_menu_route_TypeScript.prompt", "api_conversation_route_TypeScript.prompt", "api_order_route_TypeScript.prompt", "voice_controls_component_TypeScriptReact.prompt", "transcript_panel_component_TypeScriptReact.prompt", "order_summary_component_TypeScriptReact.prompt"], "tags": ["frontend", "page", "nextjs"], "filepath": "app/page.tsx"}, "voice_controls_component_TypeScriptReact": {"filename": "voice_controls_component_TypeScriptReact.prompt", "priority": 13, "description": "Client component providing push-to-talk and playback controls, handling microphone permissions and speech synthesis, and emitting transcript events to the parent.", "dependencies": ["shared_types_TypeScript.prompt"], "tags": ["frontend", "component", "voice"], "filepath": "components/VoiceControls.tsx"}, "transcript_panel_component_TypeScriptReact": {"filename": "transcript_panel_component_TypeScriptReact.prompt", "priority": 14, "description": "Client component rendering the user and assistant transcript stream with timestamps and status markers (listening, processing, confirming).", "dependencies": ["shared_types_TypeScript.prompt"], "tags": ["frontend", "component"], "filepath": "components/TranscriptPanel.tsx"}, "order_summary_component_TypeScriptReact": {"filename": "order_summary_component_TypeScriptReact.prompt", "priority": 15, "description": "Client component that displays the current order items, modifiers, totals, and validation errors with clear confirm/cancel actions.", "dependencies": ["shared_types_TypeScript.prompt"], "tags": ["frontend", "component"], "filepath": "components/OrderSummary.tsx"}};
+    
+    // Add hover listeners to all nodes
+    setTimeout(() => {
+        const nodes = document.querySelectorAll('.node');
+        nodes.forEach(node => {
+            const text = node.querySelector('.nodeLabel');
+            if (!text) return;
+            
+            const nodeText = text.textContent.trim();
+            const moduleId = nodeText.split(' ')[0];
+            const data = moduleData[moduleId];
+            
+            if (data) {
+                node.style.cursor = 'pointer';
+                
+                node.addEventListener('mouseenter', (e) => {
+                    showTooltip(e, data);
+                });
+                
+                node.addEventListener('mouseleave', () => {
+                    hideTooltip();
+                });
+            }
+        });
+    }, 500);
+});
+function showTooltip(e, data) {
+    hideTooltip();
+    
+    const tooltip = document.createElement('div');
+    tooltip.id = 'module-tooltip';
+    tooltip.innerHTML = `
+        <div style="font-weight:600;margin-bottom:8px;font-size:1.1em;">${data.filename}</div>
+        <div style="margin-bottom:6px;"><strong>Priority:</strong> ${data.priority}</div>
+        <div style="margin-bottom:6px;"><strong>Path:</strong> ${data.filepath}</div>
+        <div style="margin-bottom:6px;"><strong>Tags:</strong> ${data.tags.join(', ')}</div>
+        <div style="margin-bottom:6px;"><strong>Dependencies:</strong> ${data.dependencies.length > 0 ? data.dependencies.join(', ') : 'None'}</div>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #ddd;font-size:0.9em;color:#444;">${data.description}</div>
+    `;
+    
+    document.body.appendChild(tooltip);
+    
+    const rect = e.target.closest('.node').getBoundingClientRect();
+    tooltip.style.left = rect.right + 10 + 'px';
+    tooltip.style.top = rect.top + window.scrollY + 'px';
+}
+function hideTooltip() {
+    const existing = document.getElementById('module-tooltip');
+    if (existing) existing.remove();
+}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#fff;color:#000;padding:2rem;max-width:1400px;margin:0 auto}
+h1{font-size:2rem;font-weight:600;margin-bottom:2rem;padding-bottom:1rem;border-bottom:2px solid #000}
+.diagram{border:1px solid #000;padding:2rem;margin:2rem 0;overflow-x:auto;position:relative}
+.mermaid{display:flex;justify-content:center}
+#module-tooltip{
+    position:absolute;
+    background:#fff;
+    border:2px solid #000;
+    padding:1rem;
+    max-width:400px;
+    z-index:1000;
+    box-shadow:4px 4px 0 rgba(0,0,0,0.1);
+    font-size:0.9rem;
+    line-height:1.5;
+}
+.node{transition:opacity 0.2s}
+.node:hover{opacity:0.8}
+</style></head><body>
+<h1>PDD – AI Voice Ordering Agent for Restaurants</h1>
+<div class="diagram"><pre class="mermaid">flowchart TB
+        PRD["PDD – AI Voice Ordering Agent for Restaurants"]
+    
+    subgraph Frontend
+        api_menu_route_TypeScript["api_menu_route_TypeScript (8)"]
+        api_conversation_route_TypeScript["api_conversation_route_TypeScript (9)"]
+        api_order_route_TypeScript["api_order_route_TypeScript (10)"]
+        root_layout_TypeScriptReact["root_layout_TypeScriptReact (11)"]
+        home_page_TypeScriptReact["home_page_TypeScriptReact (12)"]
+        voice_controls_component_TypeScriptReact["voice_controls_component_TypeScriptReact (13)"]
+        transcript_panel_component_TypeScriptReact["transcript_panel_component_TypeScriptReact (14)"]
+        order_summary_component_TypeScriptReact["order_summary_component_TypeScriptReact (15)"]
+    end
+    
+    subgraph Backend
+        menu_client_TypeScript["menu_client_TypeScript (3)"]
+        order_validator_TypeScript["order_validator_TypeScript (4)"]
+        ai_client_TypeScript["ai_client_TypeScript (5)"]
+        conversation_engine_TypeScript["conversation_engine_TypeScript (6)"]
+        order_submission_client_TypeScript["order_submission_client_TypeScript (7)"]
+    end
+    
+    subgraph Shared
+        shared_types_TypeScript["shared_types_TypeScript (1)"]
+        env_config_TypeScript["env_config_TypeScript (2)"]
+    end
+    
+    PRD --> Frontend
+    PRD --> Backend
+
+    menu_client_TypeScript -->|uses| shared_types_TypeScript
+    menu_client_TypeScript -->|uses| env_config_TypeScript
+    order_validator_TypeScript -->|uses| shared_types_TypeScript
+    ai_client_TypeScript -->|uses| shared_types_TypeScript
+    ai_client_TypeScript -->|uses| env_config_TypeScript
+    conversation_engine_TypeScript -->|uses| shared_types_TypeScript
+    conversation_engine_TypeScript -->|uses| menu_client_TypeScript
+    conversation_engine_TypeScript -->|uses| order_validator_TypeScript
+    conversation_engine_TypeScript -->|uses| ai_client_TypeScript
+    order_submission_client_TypeScript -->|uses| shared_types_TypeScript
+    order_submission_client_TypeScript -->|uses| env_config_TypeScript
+    api_menu_route_TypeScript -->|uses| menu_client_TypeScript
+    api_conversation_route_TypeScript -->|uses| conversation_engine_TypeScript
+    api_order_route_TypeScript -->|uses| order_submission_client_TypeScript
+    api_order_route_TypeScript -->|uses| order_validator_TypeScript
+    root_layout_TypeScriptReact -->|uses| shared_types_TypeScript
+    home_page_TypeScriptReact -->|uses| shared_types_TypeScript
+    home_page_TypeScriptReact -->|uses| api_menu_route_TypeScript
+    home_page_TypeScriptReact -->|uses| api_conversation_route_TypeScript
+    home_page_TypeScriptReact -->|uses| api_order_route_TypeScript
+    home_page_TypeScriptReact -->|uses| voice_controls_component_TypeScriptReact
+    home_page_TypeScriptReact -->|uses| transcript_panel_component_TypeScriptReact
+    home_page_TypeScriptReact -->|uses| order_summary_component_TypeScriptReact
+    voice_controls_component_TypeScriptReact -->|uses| shared_types_TypeScript
+    transcript_panel_component_TypeScriptReact -->|uses| shared_types_TypeScript
+    order_summary_component_TypeScriptReact -->|uses| shared_types_TypeScript
+    
+    classDef frontend fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    classDef backend fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    classDef shared fill:#E8F5E9,stroke:#388E3C,stroke-width:2px
+    classDef system fill:#E0E0E0,stroke:#616161,stroke-width:3px
+    
+    class api_menu_route_TypeScript,api_conversation_route_TypeScript,api_order_route_TypeScript,root_layout_TypeScriptReact,home_page_TypeScriptReact,voice_controls_component_TypeScriptReact,transcript_panel_component_TypeScriptReact,order_summary_component_TypeScriptReact frontend
+    class menu_client_TypeScript,order_validator_TypeScript,ai_client_TypeScript,conversation_engine_TypeScript,order_submission_client_TypeScript backend
+    class shared_types_TypeScript,env_config_TypeScript shared
+    class PRD system</pre></div>
+</body></html>

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "pdd_version": "0.0.135",
+  "timestamp_utc": "20260131T214849Z",
+  "argv": [
+    "setup"
+  ],
+  "cwd": "/home/lerny/pdd/Voice_Ordering",
+  "platform": {
+    "system": "Linux",
+    "release": "6.8.0-71-generic",
+    "version": "#71-Ubuntu SMP PREEMPT_DYNAMIC Tue Jul 22 16:52:38 UTC 2025",
+    "python": "3.12.3 (main, Jun 18 2025, 17:59:45) [GCC 13.3.0]"
+  },
+  "global_options": {
+    "force": false,
+    "strength": null,
+    "temperature": null,
+    "time": 0.25,
+    "verbose": false,
+    "quiet": false,
+    "local": false,
+    "context": null,
+    "output_cost": null,
+    "review_examples": false
+  },
+  "invoked_subcommands": [],
+  "total_cost": 0.0,
+  "steps": [],
+  "errors": [],
+  "environment": {
+    "PATH": "/home/lerny/.local/bin:/home/lerny/.magento-cloud/bin:/home/lerny/.nvm/versions/node/v14.16.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/lerny/.local/share/JetBrains/Toolbox/scripts:/home/lerny/Downloads/dotnet6/dotnet-sdk-6.0.401-linux-x64:/opt/mssql-tools18/bin",
+    "PDD_PATH": "/home/lerny/.local/share/uv/tools/pdd-cli/lib/python3.12/site-packages/pdd"
+  },
+  "file_contents": {},
+  "terminal_output": "=== STDOUT ===\nChecking for updates...\nShell completion already installed for bash.\n\n--- Command Execution Summary ---\n-------------------------------------\n"
+}
