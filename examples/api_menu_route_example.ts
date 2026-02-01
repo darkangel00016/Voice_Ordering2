@@ -64,14 +64,12 @@ Fetching menu from: ${endpoint}`);
         console.log(`   - ${item.name} ($${item.basePrice})`);
       });
     } else {
-      console.warn('
-⚠️ Received 200 OK but no items found.');
+      console.warn('⚠️ Received 200 OK but no items found.');
     }
 
   } catch (error) {
     // Handle network errors (e.g., server down, DNS issues)
-    console.error('
-❌ Network Error: Failed to reach the API endpoint.');
+    console.error('❌ Network Error: Failed to reach the API endpoint.');
     console.error('   Ensure the Next.js server is running.');
     if (error instanceof Error) {
       console.error(`   Details: ${error.message}`);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateOrder } from "@/lib/orderValidator";
-import { submitOrder } from "@/lib/orderSubmissionClient";
-import { Order, MenuItem } from "@/lib/types";
+import { validateOrder } from "../../../lib/order_validator";
+import { submitOrder } from "../../../lib/order_submission_client";
+import { Order, MenuItem } from "../../../lib/types";
 
 // Mock Menu Data Source
 // In a real application, this would be fetched from a database or CMS

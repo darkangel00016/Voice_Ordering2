@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import OrderKioskPage from './OrderKioskPage'; // Assuming the module is in the same directory
+import OrderKioskPage from '../app/home_page'; // Assuming the module is in the same directory
 
 // --- Mock Layout Component ---
 // In a real Next.js app, this would be `app/layout.tsx`

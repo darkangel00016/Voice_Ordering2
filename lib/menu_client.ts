@@ -6,8 +6,8 @@
  * and normalizes errors for consistent handling by the UI/Logic layers.
  */
 
-import { MenuItem, ApiResult } from './types'; // Assumes shared types are in ./types
-import { config } from './env'; // Assumes config module is in ./env
+import { MenuItem } from './types';
+import { config } from './env_config';
 
 // --- Internal State for Caching ---
 interface CacheEntry<T> {
@@ -54,16 +54,20 @@ export async function fetchMenu(): Promise<MenuItem[]> {
   }
 
   try {
+    const queryParams = {
+      origin: 'API'
+    };
+    const queryString = new URLSearchParams(queryParams).toString();
+    const fullUrl = `${config.menuApiBaseUrl}?${queryString}`;
     // 2. Fetch from API
     // Note: In a real scenario, we might append a timestamp or version query param
-    const response = await fetch(config.menuApiBaseUrl, {
+    const response = await fetch(fullUrl, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
-        // Add authorization headers here if config.apiKey exists
+        ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}` } : {}),
       },
     });
-
     if (!response.ok) {
       throw new MenuFetchError(
         `Failed to fetch menu: ${response.status} ${response.statusText}`,
@@ -75,17 +79,7 @@ export async function fetchMenu(): Promise<MenuItem[]> {
     // We expect the API to return ApiResult<MenuItem[]> or just MenuItem[]
     // This logic handles a direct array return or a wrapped response.
     const json = await response.json();
-    
-    let items: MenuItem[] = [];
-
-    if (Array.isArray(json)) {
-      items = json;
-    } else if (json && typeof json === 'object' && 'data' in json && Array.isArray(json.data)) {
-      // Handle wrapped ApiResult format
-      items = json.data;
-    } else {
-      throw new MenuFetchError('Invalid menu data format received from API', 'INVALID_FORMAT');
-    }
+    const items = normalizeMenuPayload(json);
 
     // 4. Update Cache
     menuCache = {
@@ -108,6 +102,72 @@ export async function fetchMenu(): Promise<MenuItem[]> {
       error
     );
   }
+}
+
+type CategoryPayload = {
+  id: string | number;
+  name: string;
+  description?: string | null;
+  image?: string | null;
+  plates?: PlatePayload[];
+};
+
+type PlatePayload = {
+  id: string | number;
+  name: string;
+  description?: string | null;
+  price?: string | number | null;
+  image?: string | null;
+};
+
+function normalizeMenuPayload(payload: unknown): MenuItem[] {
+  if (Array.isArray(payload)) {
+    if (payload.length === 0) {
+      return [];
+    }
+    const first = payload[0] as Record<string, unknown>;
+    if ("price" in first) {
+      return payload as MenuItem[];
+    }
+    if ("plates" in first) {
+      return flattenCategories(payload as CategoryPayload[]);
+    }
+  }
+
+  if (payload && typeof payload === "object") {
+    const dataPayload = payload as Record<string, unknown>;
+    if (Array.isArray(dataPayload.data)) {
+      return normalizeMenuPayload(dataPayload.data);
+    }
+    if (Array.isArray(dataPayload.categories)) {
+      return flattenCategories(dataPayload.categories as CategoryPayload[]);
+    }
+    if (Array.isArray(dataPayload.menu)) {
+      return normalizeMenuPayload(dataPayload.menu);
+    }
+  }
+
+  throw new MenuFetchError('Invalid menu data format received from API', 'INVALID_FORMAT');
+}
+
+function flattenCategories(categories: CategoryPayload[]): MenuItem[] {
+  const items: MenuItem[] = [];
+  for (const category of categories) {
+    const plates = category.plates || [];
+    for (const plate of plates) {
+      items.push({
+        id: String(plate.id),
+        name: plate.name,
+        description: plate.description || "",
+        basePrice: Number(plate.price || 0),
+        category: category.name,
+        imageUrl: plate.image || category.image || undefined,
+        isAvailable: true,
+        modifierGroups: [],
+      });
+    }
+  }
+  return items;
 }
 
 /**

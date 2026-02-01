@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import VoiceControls from './VoiceControls';
+import VoiceControls from './../components/VoiceControls';
 
 /**
  * Example usage of the VoiceControls component.

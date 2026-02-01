@@ -5,7 +5,7 @@
  * Encapsulates model calls, prompt construction, and error handling.
  */
 
-import { config } from './env';
+import { config } from './env_config';
 import { 
   ConversationTurn, 
   ConversationInput 
@@ -33,12 +33,20 @@ SAFETY RULES:
  * @throws Error if the external API call fails or returns an invalid response.
  */
 export async function generateAssistantReply(input: ConversationInput): Promise<ConversationTurn> {
-  const { history, newMessage } = input;
+  const { history, newMessage, menuSummary } = input;
 
   // 1. Construct the payload for the vendor-agnostic API
   // We map our internal ConversationTurn types to a standard "messages" format
   const messages = [
     { role: 'system', content: SYSTEM_PROMPT },
+    ...(menuSummary
+      ? [
+          {
+            role: 'system',
+            content: `MENU CONTEXT:\n${menuSummary}`,
+          },
+        ]
+      : []),
     ...history.map(turn => ({
       role: turn.role,
       content: turn.content

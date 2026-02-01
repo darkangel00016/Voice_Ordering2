@@ -8,6 +8,7 @@
 export interface AppConfig {
   menuApiBaseUrl: string;
   orderSubmissionUrl: string;
+  apiKey: string;
   aiApiKey: string;
   aiModel?: string;
 }
@@ -47,8 +48,9 @@ function getOptionalEnv(key: string): string | undefined {
  */
 function loadConfig(): AppConfig {
   return {
-    menuApiBaseUrl: getRequiredEnv('MENU_API_BASE_URL'),
+    menuApiBaseUrl: getRequiredEnv('MENU_API_URL'),
     orderSubmissionUrl: getRequiredEnv('ORDER_SUBMISSION_URL'),
+    apiKey: getRequiredEnv('API_KEY'),
     aiApiKey: getRequiredEnv('AI_API_KEY'),
     aiModel: getOptionalEnv('AI_MODEL'),
   };

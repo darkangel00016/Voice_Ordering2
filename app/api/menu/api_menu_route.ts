@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchMenu, MenuFetchError } from "@/lib/menuClient";
+import { fetchMenu, MenuFetchError } from "../../../lib/menu_client";
 
 /**
  * GET /api/menu

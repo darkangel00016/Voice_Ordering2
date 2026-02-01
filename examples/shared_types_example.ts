@@ -6,7 +6,7 @@ import {
   ConversationTurn,
   ApiResult,
   CreateOrderRequest
-} from './lib/types'; // Adjust path as needed
+} from '../lib/types'; // Adjust path as needed
 
 /**
  * Example 1: Defining a Menu Item with Modifiers

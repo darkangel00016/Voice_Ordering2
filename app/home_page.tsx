@@ -7,13 +7,12 @@ import {
   ConversationState,
   ConversationTurn,
   ApiResult
-} from './lib/types';
+} from '../lib/types';
 
 // Component Imports
-import VoiceControls from './components/VoiceControls';
-import TranscriptPanel from './components/TranscriptPanel';
-import { OrderSummary } from './components/OrderSummary';
-
+import VoiceControls from '../components/VoiceControls';
+import TranscriptPanel from '../components/TranscriptPanel';
+import OrderSummary from '../components/OrderSummary';
 // Initial empty state for the conversation
 const INITIAL_STATE: ConversationState = {
   conversationId: '', // Will be generated or assigned by server/client logic
@@ -58,7 +57,8 @@ export default function OrderKioskPage() {
     // Fetch Menu (Background task to ensure API is alive and potentially cache data)
     const fetchMenu = async () => {
       try {
-        const res = await fetch('/api/menu');
+        const menuUrl = '/api/menu';
+        const res = await fetch(menuUrl);
         if (!res.ok) throw new Error('Failed to load menu');
         const data = await res.json();
         if (data.items) setMenu(data.items);
@@ -76,6 +76,8 @@ export default function OrderKioskPage() {
   const handleUserTranscript = useCallback(async (text: string) => {
     if (!text.trim()) return;
 
+    const normalizedText = normalizeNumberWords(text);
+
     setIsProcessing(true);
     setError(null);
 
@@ -83,7 +85,7 @@ export default function OrderKioskPage() {
     const userTurn: ConversationTurn = {
       id: `turn_user_${Date.now()}`,
       role: 'user',
-      content: text,
+      content: normalizedText,
       timestamp: new Date().toISOString()
     };
 
@@ -97,7 +99,7 @@ export default function OrderKioskPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: text,
+          message: normalizedText,
           state: conversationState // Send current context
         })
       });
@@ -127,6 +129,54 @@ export default function OrderKioskPage() {
     }
   }, [conversationState]);
 
+  const normalizeNumberWords = (input: string) => {
+    const map: Record<string, string> = {
+      un: "1",
+      una: "1",
+      uno: "1",
+      dos: "2",
+      tres: "3",
+      cuatro: "4",
+      cinco: "5",
+      seis: "6",
+      siete: "7",
+      ocho: "8",
+      nueve: "9",
+      diez: "10",
+      once: "11",
+      doce: "12",
+      trece: "13",
+      catorce: "14",
+      quince: "15",
+      dieciseis: "16",
+      diecisiete: "17",
+      dieciocho: "18",
+      diecinueve: "19",
+      veinte: "20",
+      veintiuno: "21",
+      veintidos: "22",
+      veintitres: "23",
+      veinticuatro: "24",
+      veinticinco: "25",
+      veintiseis: "26",
+      veintisiete: "27",
+      veintiocho: "28",
+      veintinueve: "29",
+      treinta: "30",
+      cuarenta: "40",
+      cincuenta: "50",
+      sesenta: "60",
+      setenta: "70",
+      ochenta: "80",
+      noventa: "90",
+    };
+
+    return input.replace(/\b(un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce|trece|catorce|quince|dieciseis|diecisiete|dieciocho|diecinueve|veinte|veintiuno|veintidos|veintitres|veinticuatro|veinticinco|veintiseis|veintisiete|veintiocho|veintinueve|treinta|cuarenta|cincuenta|sesenta|setenta|ochenta|noventa)\b/gi, (match) => {
+      const key = match.toLowerCase();
+      return map[key] || match;
+    });
+  };
+
   // --- 3. Order Finalization (POST /api/order) ---
 
   const handleConfirmOrder = async () => {
@@ -139,7 +189,8 @@ export default function OrderKioskPage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/order', {
+      const orderUrl = '/api/order';
+      const response = await fetch(orderUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(conversationState.currentOrder)
@@ -174,7 +225,6 @@ export default function OrderKioskPage() {
   const handleEditOrder = () => {
     // In a voice-first UI, "Edit" usually means prompting the user to speak changes
     setAssistantResponse("What would you like to change?");
-    // We could also scroll to the transcript or focus the mic here
   };
 
   // --- Render ---

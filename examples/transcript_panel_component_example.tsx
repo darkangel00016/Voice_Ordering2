@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import TranscriptPanel from './components/TranscriptPanel'; // Adjust path as needed
-import { ConversationTurn } from './lib/types'; // Adjust path as needed
+import TranscriptPanel from './../components/TranscriptPanel'; // Adjust path as needed
+import { ConversationTurn } from '../lib/types'; // Adjust path as needed
 
 /**
  * Example Usage: Live Order Assistant

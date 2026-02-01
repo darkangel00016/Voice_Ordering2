@@ -15,7 +15,7 @@ process.env.AI_MODEL = 'gpt-4-turbo';
 
 // 2. Import the config singleton.
 // CRITICAL: This import will THROW an error immediately if required env vars are missing.
-import { config } from '../lib/env';
+import { config } from '../lib/env_config';
 
 async function startApplication() {
   try {

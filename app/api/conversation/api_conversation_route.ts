@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { advanceConversation, ConversationError } from "@/lib/conversationEngine";
-import { ConversationState } from "@/lib/types";
+import { advanceConversation, ConversationError } from "../../../lib/conversation_engine";
+import { ConversationState } from "../../../lib/types";
 
 /**
  * Request body schema for the conversation endpoint.

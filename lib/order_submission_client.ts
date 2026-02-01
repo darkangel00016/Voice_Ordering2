@@ -6,7 +6,7 @@
  */
 
 import { Order, ApiResult } from './types'; // Adjust path based on your project structure
-import { config } from './env'; // Adjust path based on your project structure
+import { config } from './env_config';
 
 /**
  * Represents the specific result of an order submission attempt.
@@ -56,14 +56,23 @@ export async function submitOrder(order: Order): Promise<SubmissionResult> {
 
   while (attempt <= RETRY_CONFIG.maxRetries) {
     try {
-      const response = await fetch(url, {
+      const queryParams = {
+        origin: 'API'
+      };
+      const queryString = new URLSearchParams(queryParams).toString();
+      const fullUrl = `${url}?${queryString}`;
+      const formData = new FormData();
+      order.items.forEach((item, index) => {
+        formData.append(`items[${index}][id]`, String(item.menuItemId));
+        formData.append(`items[${index}][quantity]`, String(item.quantity));
+      });
+
+      const response = await fetch(fullUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          // Add authentication headers here if config supports it, e.g.:
-          // 'Authorization': `Bearer ${config.apiKey}`
+          ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}` } : {}),
         },
-        body: JSON.stringify(order),
+        body: formData,
       });
 
       // Handle non-2xx responses
