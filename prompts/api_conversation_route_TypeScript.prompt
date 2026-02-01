@@ -9,6 +9,8 @@ Dependencies
 conversation_engine_TypeScript.prompt
   <include>examples/conversation_engine_example.ts</include>
 
+<internal_example_modules> </internal_example_modules>
+
 Instructions
 - Keep the implementation framework-idiomatic and typed.
 - Avoid hardcoded values; rely on inputs and configuration.

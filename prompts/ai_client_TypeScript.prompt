@@ -11,6 +11,8 @@ shared_types_TypeScript.prompt
 env_config_TypeScript.prompt
   <include>examples/env_config_example.ts</include>
 
+- **No includes available to emit.**
+
 Instructions
 - Keep the implementation framework-idiomatic and typed.
 - Avoid hardcoded values; rely on inputs and configuration.

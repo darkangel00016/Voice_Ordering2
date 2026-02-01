@@ -1,0 +1,10 @@
+{
+  "pdd_version": "0.0.135",
+  "timestamp": "2026-02-01T00:47:45.609371+00:00",
+  "command": "example",
+  "prompt_hash": "230ddfc49272acf2757b35e320afd0d60c6d8a7f326fff00f8d654ecb6ea2eec",
+  "code_hash": "ba82eac478669fa08777071619d66c8b1b48eced2431a9b359bfd6ef0b053093",
+  "example_hash": "10ea1146ab6d20782e05ba6064a46f261743f614f3ab33266a208955a4ae5fb7",
+  "test_hash": null,
+  "test_files": {}
+}

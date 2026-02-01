@@ -8,6 +8,9 @@ Dependencies
 shared_types_TypeScript.prompt
   <include>examples/shared_types_example.ts</include>
 
+<internal_example_modules>
+</internal_example_modules>
+
 Instructions
 - Keep the component focused on presentation + events; state is owned by the parent unless required.
 - Gracefully handle missing browser capabilities (speech, mic, etc.).

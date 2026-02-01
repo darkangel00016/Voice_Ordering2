@@ -8,6 +8,9 @@ Dependencies
 shared_types_TypeScript.prompt
   <include>examples/shared_types_example.ts</include>
 
+<internal_example_modules>
+</internal_example_modules>
+
 Instructions
 - Use client components only where browser APIs are required.
 - Design the UI to work without audio permissions by providing fallback messaging.
